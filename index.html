@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/main.css">
+    <title>FreeGames</title>
+</head>
+<body>
+    <header>
+		<h1>FreeGames</h1>
+		<form method="POST">
+			<select class="btn_select">
+				<option value="all">Tous</option>
+				<option value="option1">Option 1</option>
+				<option value="option2">Option 2</option>
+				<option value="option3">Option 3</option>
+			</select>
+			<label class="btn_search" for="name">Name:</label>
+			<input class="test1" type="text" name="name">
+			<label class="btn_search2" for="id">ID:</label>
+			<input class="test1" type="text" name="id">
+			<input class="test1" type="submit" value="Search">
+		</form>
+	</header>
+	
+	<main>
+		
+		<h2>Results:</h2>
+		{{if .}}
+			<ul>
+				{{range .}}
+					<li>
+						<h3>{{.Title}}</h3>
+						<img src="{{.Thumbnail}}" alt="{{.Title}}">
+						<p>{{.ShortDesc}}</p>
+						<a href="{{.GameURL}}">Play Now!</a>
+					</li>
+				{{end}}
+			</ul>
+		{{else}}
+			<p>Pas de résultat trouvé.</p>
+		{{end}}
+	</main>
+	<footer>
+		
+	</footer>
+</body>
+</html>
