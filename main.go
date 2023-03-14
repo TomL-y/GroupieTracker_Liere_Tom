@@ -59,6 +59,16 @@ func filterGamesByID(games []Game, id int) []Game {
 	return filtered
 }
 
+func filterGamesByGenre(games []Game, genre string) []Game {
+	var filtered []Game
+	for _, game := range games {
+		if strings.Contains(strings.ToLower(game.Genre), strings.ToLower(genre)) {
+			filtered = append(filtered, game)
+		}
+	}
+	return filtered
+}
+
 func main() {
 	games, err := getGames()
 	if err != nil {
@@ -80,6 +90,7 @@ func main() {
 
 			name := r.FormValue("name")
 			idStr := r.FormValue("id")
+			genre := r.FormValue("genre")
 			var filtered []Game
 			if name != "" {
 				filtered = filterGamesByName(games, name)
@@ -90,6 +101,8 @@ func main() {
 					return
 				}
 				filtered = filterGamesByID(games, id)
+			} else if genre != "" {
+				filtered = filterGamesByGenre(games, genre)
 			} else {
 				filtered = games
 			}

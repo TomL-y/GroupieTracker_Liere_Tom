@@ -10,39 +10,49 @@
 <body>
     <header>
 		<h1>FreeGames</h1>
-		<form method="POST">
-			<select class="btn_select">
-				<option value="all">Tous</option>
-				<option value="option1">Option 1</option>
-				<option value="option2">Option 2</option>
-				<option value="option3">Option 3</option>
-			</select>
-			<label class="btn_search" for="name">Name:</label>
-			<input class="test1" type="text" name="name">
-			<label class="btn_search2" for="id">ID:</label>
-			<input class="test1" type="text" name="id">
-			<input class="test1" type="submit" value="Search">
-		</form>
 	</header>
-	
 	<main>
-		
-		<h2>Results:</h2>
+		<div>
+			<form class="form1" method="POST">
+				<select class="btn_select" name="genre">
+					<option value="">Tous</option>
+					<option value="Shooter">Shooter</option>
+					<option value="MMOARPG">MMOARPG</option>
+					<option value="ARPG">ARPG</option>
+					<option value="Strategy">Strategy</option>
+					<option value="MMORPG">MMORPG</option>
+					<option value="Action RPG">Action RPG</option>
+					<option value="Battle Royale">Battle Royale</option>
+					<option value="Fighting">Fighting</option>
+					<option value="MOBA">MOBA</option>
+					<option value="Racing">Racing</option>
+					<option value="Card Game">Card Game</option>
+					<option value="Sports">Sports</option>
+					<option value="Social">Social</option>
+					<option value="Fantasy">Fantasy</option>
+				</select>
+				<button class="valid" type="submit">Valider</button>
+				<label class="btn_search" for="name">Name:</label>
+				<input class="test1" type="text" name="name">
+				<label class="btn_search2" for="id">ID:</label>
+				<input class="test1" type="text" name="id">
+				<input class="test2" type="submit" value="Search">
+			</form>
+		</div>
 		{{if .}}
-			<ul>
-				{{range .}}
-					<li>
-						<h3>{{.Title}}</h3>
-						<img src="{{.Thumbnail}}" alt="{{.Title}}">
-						<p>{{.ShortDesc}}</p>
-						<a href="{{.GameURL}}">Play Now!</a>
-					</li>
-				{{end}}
-			</ul>
+		  {{range .}}
+			<div class="game-container">
+			  <h3>{{.Title}}</h3>
+			  <img src="{{.Thumbnail}}" alt="{{.Title}}">
+			  <p>{{.ShortDesc}}</p>
+			  <a href="{{.GameURL}}">Play Now!</a>
+			</div>
+		  {{end}}
 		{{else}}
-			<p>Pas de résultat trouvé.</p>
+		  <p>Pas de résultat trouvé.</p>
 		{{end}}
-	</main>
+		<div class="pied"></div>
+	  </main>
 	<footer>
 		
 	</footer>
