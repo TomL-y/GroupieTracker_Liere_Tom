@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"html/template"
 	"net/http"
-	"strconv"
 	"strings"
 )
 
@@ -39,21 +38,14 @@ func getGames() ([]Game, error) {
 	return games, nil
 }
 
-func filterGamesByName(games []Game, name string) []Game {
+func filterGamesByName(games []Game, name string, genre string) []Game {
 	var filtered []Game
 	for _, game := range games {
 		if strings.Contains(strings.ToLower(game.Title), strings.ToLower(name)) {
-			filtered = append(filtered, game)
-		}
-	}
-	return filtered
-}
+			if genre == "all" || strings.Contains(strings.ToLower(game.Genre), strings.ToLower(genre)) {
+				filtered = append(filtered, game)
 
-func filterGamesByID(games []Game, id int) []Game {
-	var filtered []Game
-	for _, game := range games {
-		if game.ID == id {
-			filtered = append(filtered, game)
+			}
 		}
 	}
 	return filtered
@@ -62,7 +54,9 @@ func filterGamesByID(games []Game, id int) []Game {
 func filterGamesByGenre(games []Game, genre string) []Game {
 	var filtered []Game
 	for _, game := range games {
-		if strings.Contains(strings.ToLower(game.Genre), strings.ToLower(genre)) {
+		if genre == "all" {
+			return games
+		} else if genre == "" || strings.Contains(strings.ToLower(game.Genre), strings.ToLower(genre)) {
 			filtered = append(filtered, game)
 		}
 	}
@@ -75,12 +69,17 @@ func main() {
 		panic(err)
 	}
 
+	var selectedGenre string
+
 	static := http.FileServer(http.Dir("css"))
 	http.Handle("/css/", http.StripPrefix("/css/", static))
 
 	tmpl := template.Must(template.ParseFiles("index.html"))
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		var filtered []Game
+		var filteredApplied bool
+
 		if r.Method == http.MethodPost {
 			err := r.ParseForm()
 			if err != nil {
@@ -89,22 +88,21 @@ func main() {
 			}
 
 			name := r.FormValue("name")
-			idStr := r.FormValue("id")
 			genre := r.FormValue("genre")
-			var filtered []Game
+
+			if genre != "" {
+				selectedGenre = genre
+			}
+
 			if name != "" {
-				filtered = filterGamesByName(games, name)
-			} else if idStr != "" {
-				id, err := strconv.Atoi(idStr)
-				if err != nil {
-					http.Error(w, "Bad Request", http.StatusBadRequest)
-					return
-				}
-				filtered = filterGamesByID(games, id)
-			} else if genre != "" {
-				filtered = filterGamesByGenre(games, genre)
+				filtered = filterGamesByName(games, name, selectedGenre)
+				filteredApplied = true
+			} else if selectedGenre != "" {
+				filtered = filterGamesByGenre(games, selectedGenre)
+				filteredApplied = true
 			} else {
 				filtered = games
+				filteredApplied = true
 			}
 
 			err = tmpl.Execute(w, filtered)
@@ -117,6 +115,15 @@ func main() {
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
+			}
+		}
+
+		if filteredApplied {
+			games = filtered
+		} else {
+			games, err = getGames()
+			if err != nil {
+				panic(err)
 			}
 		}
 	})

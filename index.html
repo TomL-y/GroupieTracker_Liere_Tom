@@ -12,10 +12,10 @@
 		<h1>FreeGames</h1>
 	</header>
 	<main>
-		<div>
+		<div class="main-content">
 			<form class="form1" method="POST">
-				<select class="btn_select" name="genre">
-					<option value="">Tous</option>
+				<select class="btn_select" name="genre" id="genre">
+					<option value="all">All</option>
 					<option value="Shooter">Shooter</option>
 					<option value="MMOARPG">MMOARPG</option>
 					<option value="ARPG">ARPG</option>
@@ -31,11 +31,9 @@
 					<option value="Social">Social</option>
 					<option value="Fantasy">Fantasy</option>
 				</select>
-				<button class="valid" type="submit">Valider</button>
+				<button class="valid" value="Submit">Send</button>
 				<label class="btn_search" for="name">Name:</label>
 				<input class="test1" type="text" name="name">
-				<label class="btn_search2" for="id">ID:</label>
-				<input class="test1" type="text" name="id">
 				<input class="test2" type="submit" value="Search">
 			</form>
 		</div>
@@ -49,7 +47,7 @@
 			</div>
 		  {{end}}
 		{{else}}
-		  <p>Pas de résultat trouvé.</p>
+		  <p class="false">Pas de résultat trouvé.</p>
 		{{end}}
 		<div class="pied"></div>
 	  </main>

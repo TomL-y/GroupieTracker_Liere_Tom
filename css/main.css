@@ -6,7 +6,7 @@
 
 @font-face {
 	font-family: 'Design';
-	src: url(../src/Designer.otf);
+	src: url("Designer.otf");
 }
 
 header {
@@ -17,7 +17,7 @@ header {
 	flex-wrap: wrap;
 	align-items: center;
 	justify-content: flex-start;
-	font-family: 'Design';
+	font-family: 'Design', 'sans-serif';
 }
 
 .form1{
@@ -72,6 +72,15 @@ select {
     margin-left: 25px;
 }
 
+.test2:hover{
+	scale: 1.2;
+	transition: 1s;
+}
+
+.test2:not(hover){
+	transition: 1s;
+}
+
 .test1{
 	margin-left: 10px;
 }
@@ -80,6 +89,8 @@ select {
 	margin-left: 10px;
 	padding: 10px 10px;
 	border-radius: 10px;
+	border: none;
+	font-family: 'Design', 'sans-serif';
 }
 
 .btn_search2{
@@ -88,6 +99,19 @@ select {
 
 .valid{
 	margin-left: 15px;
+	padding: 10px 10px;
+	border-radius: 10px;
+	border: none;
+	font-family: 'Design', 'sans-serif';
+}
+
+.valid:hover{
+	scale: 1.2;
+	transition: 1s;
+}
+
+.valid:not(hover){
+	transition: 1s;
 }
 
 main {
@@ -119,6 +143,9 @@ main {
   .game-container p {
 	margin-top: 10px;
 	font-size: 14px;
+	font-family: 'Design', 'sans-serif';
+	font-size: 12px;
+	letter-spacing: 1px;
   }
   
   .game-container a {
@@ -145,3 +172,18 @@ main {
 	width: 100%;
 	height: 29.1vh;
   }
+
+  .main-content{
+	width: 100%;
+	margin-left: 5%;
+	color: #fff;
+	font-family: 'Design', 'sans-serif';
+  }
+
+  .false{
+	color: white;
+	font-size: 40px;
+	margin-top: 28.7vh;
+	font-family: 'Design', 'sans-serif';
+  }
+  
