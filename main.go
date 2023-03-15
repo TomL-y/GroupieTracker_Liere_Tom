@@ -71,8 +71,8 @@ func main() {
 
 	var selectedGenre string
 
-	static := http.FileServer(http.Dir("css"))
-	http.Handle("/css/", http.StripPrefix("/css/", static))
+	static := http.FileServer(http.Dir("src"))
+	http.Handle("/src/", http.StripPrefix("/src/", static))
 
 	tmpl := template.Must(template.ParseFiles("index.html"))
 

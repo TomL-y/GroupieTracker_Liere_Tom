@@ -15,9 +15,47 @@ header {
 	padding: 10px;
 	display: flex;
 	flex-wrap: wrap;
-	align-items: center;
 	justify-content: flex-start;
 	font-family: 'Design', 'sans-serif';
+}
+
+.Titre{
+	width: 20%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	margin-top: 20px;
+}
+
+.btn_pc, .btn_web, .btn_main{
+	margin-right: 2% ;
+	padding: 20px;
+	border-radius: 20px	;
+}
+
+.btn_pc:hover{
+	background-color: rgb(194, 139, 38);
+	transition: 1s;
+}
+
+.btn_main:hover{
+	background-color: rgb(160, 19, 19);
+	transition: 1s;
+}
+
+.btn_web:hover{
+	background-color: rgb(25, 25, 109) ;
+	transition: 1s;
+}
+
+.btn_pc:not(hover), .btn_web:not(hover), .btn_main:not(hover){
+	transition: 1s;
+}
+
+.btn_autre{
+	width: 80%;
+	display: flex;
+	justify-content: flex-end;
 }
 
 .form1{
@@ -28,6 +66,14 @@ h1 {
 	margin: 0;
     font-size: 40px;
     margin-left: 2%;
+}
+
+header a {
+	margin: 0;
+    font-size: 40px;
+    margin-left: 2%;
+	text-decoration: none;
+	color: white;
 }
 
 form {
@@ -57,6 +103,7 @@ select {
 	border-radius: 5px;
 	border: none;
 }
+
 
 .search{
     margin-left: 30px;
