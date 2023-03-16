@@ -38,6 +38,38 @@ func getGames() ([]Game, error) {
 	return games, nil
 }
 
+func getPCGames() ([]Game, error) {
+	resp, err := http.Get("https://www.freetogame.com/api/games?platform=pc")
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var games []Game
+	err = json.NewDecoder(resp.Body).Decode(&games)
+	if err != nil {
+		return nil, err
+	}
+
+	return games, nil
+}
+
+func getWebGames() ([]Game, error) {
+	resp, err := http.Get("https://www.freetogame.com/api/games?platform=browser")
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var games []Game
+	err = json.NewDecoder(resp.Body).Decode(&games)
+	if err != nil {
+		return nil, err
+	}
+
+	return games, nil
+}
+
 func filterGamesByName(games []Game, name string, genre string) []Game {
 	var filtered []Game
 	for _, game := range games {
@@ -46,6 +78,16 @@ func filterGamesByName(games []Game, name string, genre string) []Game {
 				filtered = append(filtered, game)
 
 			}
+		}
+	}
+	return filtered
+}
+
+func filterGamesByPlatform(games []Game, platform string) []Game {
+	var filtered []Game
+	for _, game := range games {
+		if strings.Contains(strings.ToLower(game.Platform), strings.ToLower(platform)) {
+			filtered = append(filtered, game)
 		}
 	}
 	return filtered
@@ -75,8 +117,19 @@ func main() {
 	http.Handle("/src/", http.StripPrefix("/src/", static))
 
 	tmpl := template.Must(template.ParseFiles("index.html"))
+	tmpl2 := template.Must(template.ParseFiles("src/template/main.html"))
+	tmpl3 := template.Must(template.ParseFiles("src/template/jeuxpc.html"))
+	tmpl4 := template.Must(template.ParseFiles("src/template/jeuxweb.html"))
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		err := tmpl.Execute(w, games)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	})
+
+	http.HandleFunc("/main", func(w http.ResponseWriter, r *http.Request) {
 		var filtered []Game
 		var filteredApplied bool
 
@@ -105,13 +158,13 @@ func main() {
 				filteredApplied = true
 			}
 
-			err = tmpl.Execute(w, filtered)
+			err = tmpl2.Execute(w, filtered)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
 		} else {
-			err := tmpl.Execute(w, games)
+			err := tmpl2.Execute(w, games)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
@@ -122,6 +175,102 @@ func main() {
 			games = filtered
 		} else {
 			games, err = getGames()
+			if err != nil {
+				panic(err)
+			}
+		}
+	})
+
+	http.HandleFunc("/jeuxpc", func(w http.ResponseWriter, r *http.Request) {
+		var filtered []Game
+		var filteredApplied bool
+
+		if r.Method == http.MethodPost {
+			err := r.ParseForm()
+			if err != nil {
+				http.Error(w, "Bad Request", http.StatusBadRequest)
+				return
+			}
+
+			name := r.FormValue("name")
+			genre := r.FormValue("genre")
+
+			if name != "" || genre != "" {
+				filtered = filterGamesByName(games, name, genre)
+				filtered = filterGamesByPlatform(filtered, "PC")
+				filteredApplied = true
+			} else {
+				filtered = filterGamesByPlatform(games, "PC")
+				filteredApplied = true
+			}
+
+			err = tmpl3.Execute(w, filtered)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+		} else {
+			filtered := filterGamesByPlatform(games, "PC")
+
+			err := tmpl3.Execute(w, filtered)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+		}
+
+		if filteredApplied {
+			games = filtered
+		} else {
+			games, err = getPCGames()
+			if err != nil {
+				panic(err)
+			}
+		}
+	})
+
+	http.HandleFunc("/jeuxweb", func(w http.ResponseWriter, r *http.Request) {
+		var filtered []Game
+		var filteredApplied bool
+
+		if r.Method == http.MethodPost {
+			err := r.ParseForm()
+			if err != nil {
+				http.Error(w, "Bad Request", http.StatusBadRequest)
+				return
+			}
+
+			name := r.FormValue("name")
+			genre := r.FormValue("genre")
+
+			if name != "" || genre != "" {
+				filtered = filterGamesByName(games, name, genre)
+				filtered = filterGamesByPlatform(filtered, "Web")
+				filteredApplied = true
+			} else {
+				filtered = filterGamesByPlatform(games, "Web")
+				filteredApplied = true
+			}
+
+			err = tmpl4.Execute(w, filtered)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+		} else {
+			filtered := filterGamesByPlatform(games, "Web")
+
+			err := tmpl4.Execute(w, filtered)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+		}
+
+		if filteredApplied {
+			games = filtered
+		} else {
+			games, err = getWebGames()
 			if err != nil {
 				panic(err)
 			}

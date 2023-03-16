@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="src/css/main.css">
+    <title>FreeGames</title>
+</head>
+<body>
+    <header>
+		<div class="Titre">
+			<h1>FreeGames</h1>
+		</div>
+		<div class="btn_autre">
+			<a class="btn_main" href="/main">All Game</a>
+			<a class="btn_pc" href="/jeuxpc">Game PC</a>
+			<a class="btn_web" href="/jeuxweb">Game WEB</a>
+		</div>
+	</header>
+	<main>
+		<div class="main-content">
+			<form class="form1" method="POST">
+				<select class="btn_select" name="genre" id="genre2">
+					<option value="all">All</option>
+					<option value="Shooter">Shooter</option>
+					<option value="MMOARPG">MMOARPG</option>
+					<option value="ARPG">ARPG</option>
+					<option value="Strategy">Strategy</option>
+					<option value="MMORPG">MMORPG</option>
+					<option value="Action RPG">Action RPG</option>
+					<option value="Battle Royale">Battle Royale</option>
+					<option value="Fighting">Fighting</option>
+					<option value="MOBA">MOBA</option>
+					<option value="Racing">Racing</option>
+					<option value="Card Game">Card Game</option>
+					<option value="Sports">Sports</option>
+					<option value="Social">Social</option>
+					<option value="Fantasy">Fantasy</option>
+				</select>
+				<button class="valid" value="Submit">Send</button>
+				<label class="btn_search" for="name">Name:</label>
+				<input class="test1" type="text" name="name">
+				<input class="test2" type="submit" value="Search">
+			</form>
+		</div>
+		{{if .}}
+		  {{range .}}
+			<div class="game-container">
+			  <h3>{{.Title}}</h3>
+			  <img src="{{.Thumbnail}}" alt="{{.Title}}">
+			  <p>{{.ShortDesc}}</p>
+			  <a href="{{.GameURL}}">Play Now!</a>
+			</div>
+		  {{end}}
+		{{else}}
+		  <p class="false">Pas de résultat trouvé.</p>
+		{{end}}
+		<div class="pied"></div>
+	  </main>
+	<footer>
+		
+	</footer>
+	<script src="src/js/java1.js"></script>
+</body>
+</html>
