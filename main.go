@@ -106,7 +106,7 @@ func filterGamesByGenre(games []Game, genre string) []Game {
 }
 
 func main() {
-	games, err := getGames()
+	allGames, err := getGames()
 	if err != nil {
 		panic(err)
 	}
@@ -122,7 +122,7 @@ func main() {
 	tmpl4 := template.Must(template.ParseFiles("src/template/jeuxweb.html"))
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		err := tmpl.Execute(w, games)
+		err := tmpl.Execute(w, allGames)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -130,8 +130,8 @@ func main() {
 	})
 
 	http.HandleFunc("/main", func(w http.ResponseWriter, r *http.Request) {
+		games := allGames
 		var filtered []Game
-		var filteredApplied bool
 
 		if r.Method == http.MethodPost {
 			err := r.ParseForm()
@@ -149,41 +149,26 @@ func main() {
 
 			if name != "" {
 				filtered = filterGamesByName(games, name, selectedGenre)
-				filteredApplied = true
 			} else if selectedGenre != "" {
 				filtered = filterGamesByGenre(games, selectedGenre)
-				filteredApplied = true
 			} else {
 				filtered = games
-				filteredApplied = true
 			}
 
-			err = tmpl2.Execute(w, filtered)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
 		} else {
-			err := tmpl2.Execute(w, games)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
+			filtered = games
 		}
 
-		if filteredApplied {
-			games = filtered
-		} else {
-			games, err = getGames()
-			if err != nil {
-				panic(err)
-			}
+		err := tmpl2.Execute(w, filtered)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
 	})
 
 	http.HandleFunc("/jeuxpc", func(w http.ResponseWriter, r *http.Request) {
+		games := allGames
 		var filtered []Game
-		var filteredApplied bool
 
 		if r.Method == http.MethodPost {
 			err := r.ParseForm()
@@ -198,40 +183,24 @@ func main() {
 			if name != "" || genre != "" {
 				filtered = filterGamesByName(games, name, genre)
 				filtered = filterGamesByPlatform(filtered, "PC")
-				filteredApplied = true
 			} else {
 				filtered = filterGamesByPlatform(games, "PC")
-				filteredApplied = true
 			}
 
-			err = tmpl3.Execute(w, filtered)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
 		} else {
-			filtered := filterGamesByPlatform(games, "PC")
-
-			err := tmpl3.Execute(w, filtered)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
+			filtered = filterGamesByPlatform(games, "PC")
 		}
 
-		if filteredApplied {
-			games = filtered
-		} else {
-			games, err = getPCGames()
-			if err != nil {
-				panic(err)
-			}
+		err := tmpl3.Execute(w, filtered)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
 	})
 
 	http.HandleFunc("/jeuxweb", func(w http.ResponseWriter, r *http.Request) {
+		games := allGames
 		var filtered []Game
-		var filteredApplied bool
 
 		if r.Method == http.MethodPost {
 			err := r.ParseForm()
@@ -246,34 +215,18 @@ func main() {
 			if name != "" || genre != "" {
 				filtered = filterGamesByName(games, name, genre)
 				filtered = filterGamesByPlatform(filtered, "Web")
-				filteredApplied = true
 			} else {
 				filtered = filterGamesByPlatform(games, "Web")
-				filteredApplied = true
 			}
 
-			err = tmpl4.Execute(w, filtered)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
 		} else {
-			filtered := filterGamesByPlatform(games, "Web")
-
-			err := tmpl4.Execute(w, filtered)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
+			filtered = filterGamesByPlatform(games, "Web")
 		}
 
-		if filteredApplied {
-			games = filtered
-		} else {
-			games, err = getWebGames()
-			if err != nil {
-				panic(err)
-			}
+		err := tmpl4.Execute(w, filtered)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
 	})
 
